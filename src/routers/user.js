@@ -1,5 +1,6 @@
 const express = require("express");
 const router = new express.Router();
+const multer = require("multer");
 
 const User = require("../models/user");
 const auth = require("../middleware/auth.js");
@@ -84,6 +85,19 @@ router.delete("/users/me", auth, async (req, res) => {
     await req.user.remove();
 
     res.send(req.user);
+  } catch (error) {
+    res.status(500).send();
+  }
+});
+
+// Upload profile pictures to avatars folder using multer
+const upload = multer({
+  dest: "avatars",
+});
+
+router.post("/users/me/avatar", upload.single("avatar"), async (req, res) => {
+  try {
+    res.status(200).send();
   } catch (error) {
     res.status(500).send();
   }
