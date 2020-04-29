@@ -93,6 +93,20 @@ router.delete("/users/me", auth, async (req, res) => {
 // Upload profile pictures to avatars folder using multer
 const upload = multer({
   dest: "avatars",
+  limits: {
+    fileSize: 1000000,
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return cb(
+        new Error(
+          "The file format is not supported. Please upload a jpg, a jpeg or a png file"
+        )
+      );
+    }
+
+    cb(undefined, true);
+  },
 });
 
 router.post("/users/me/avatar", upload.single("avatar"), async (req, res) => {
